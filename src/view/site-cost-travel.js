@@ -1,9 +1,9 @@
 const getTotalPrice = (taskList) => {
   let totalPrice = 0;
   taskList.forEach((task) => {
-    totalPrice += task.price
-  })
-  return totalPrice
+    totalPrice += task.price;
+  });
+  return totalPrice;
 };
 
 export const createSiteCostTravelTemplate = (taskList) => {

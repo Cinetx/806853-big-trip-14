@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 export const createSiteEditingFormTemplate = (task)=>{
   const { info } = task;
-  const { type, city, favorite, price, startEvent, endEvent, offers } = task;
+  const { type, city, price, startEvent, endEvent } = task;
 
   const dateStart = dayjs(startEvent).format('YY/MM/DD HH:mm');
   const dateEnd = dayjs(endEvent).format('YY/MM/DD HH:mm');

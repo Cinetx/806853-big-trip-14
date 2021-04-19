@@ -29,7 +29,15 @@ const showDurationTime = (duration) => {
   }
 };
 export const createSiteWaypointItemTemplate = (task) => {
-  const { type, city, favorite, price, startEvent, endEvent, offers } = task;
+  const {
+    type,
+    city,
+    favorite,
+    price,
+    startEvent,
+    endEvent,
+    offers,
+  } = task;
 
   const dateStart = dayjs(startEvent).format('YYYY-MM-DDTHH:mm');
   const dateEnd = dayjs(endEvent).format('YYYY-MM-DDTHH:mm');
@@ -37,12 +45,12 @@ export const createSiteWaypointItemTemplate = (task) => {
   const dayStart = dayjs(startEvent).format('MMM DD');
   const dateDayStart = dayjs(startEvent).format('YYYY-MM-DD');
   const dateTimeStart = dayjs(startEvent).format('HH:mm');
-  const dateTimeEnd =   dayjs(endEvent).format('HH:mm');
+  const dateTimeEnd = dayjs(endEvent).format('HH:mm');
 
   const duration = Math.abs(dayjs(startEvent).diff(dayjs(endEvent), 'm'));
-  const addOffersToMarkup = offers.map((item)=>
-     createOffer(item)
-  ).join(' ');
+  const addOffersToMarkup = offers.map((item) =>
+    createOffer(item))
+    .join(' ');
 
   const favoriteClassName = favorite ? 'event__favorite-btn event__favorite-btn--active' : 'event__favorite-btn';
   return `<li class="trip-events__item">

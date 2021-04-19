@@ -10,11 +10,26 @@ const TASK_CITY = ['Дача императора', 'Цитадель', 'Гор�
 const TASK_TYPE = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
 const OFFERS = [
-  { title: 'add luggage', price: 50 },
-  { title: 'switch to comfort class', price: 100 },
-  { title: 'add meal', price: 15 },
-  { title: 'choose seats', price: 5 },
-  { title: 'travel by train', price: 40 },
+  {
+    title: 'add luggage',
+    price: 50,
+  },
+  {
+    title: 'switch to comfort class',
+    price: 100,
+  },
+  {
+    title: 'add meal',
+    price: 15,
+  },
+  {
+    title: 'choose seats',
+    price: 5,
+  },
+  {
+    title: 'travel by train',
+    price: 40,
+  },
 ];
 
 const getRandomInt = (a = 1, b = 0) => {
@@ -22,7 +37,8 @@ const getRandomInt = (a = 1, b = 0) => {
   const upper = Math.floor(Math.max(a, b));
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
-const getRandomArrayItem = (ar) =>{
+
+const getRandomArrayItem = (ar) => {
   const randomItem = getRandomInt(0, ar.length - 1);
   return ar[randomItem];
 };
@@ -35,7 +51,6 @@ const generateDate = () => {
   const days = getRandomInt(1, 6);
   const hours = getRandomInt(0, 23);
   const minutes = getRandomInt(1, 59);
-
   return dayjs().add(days, 'd').add(hours, 'h').add(minutes, 'm').toDate();
 };
 
@@ -44,8 +59,8 @@ const generateOffers = () => {
     new Set(
       new Array(getRandomInt(1, 5))
         .fill()
-        .map(() => OFFERS[getRandomInt(0, OFFERS.length - 1)])
-    )
+        .map(() => OFFERS[getRandomInt(0, OFFERS.length - 1)]),
+    ),
   );
 };
 
@@ -60,6 +75,6 @@ export const generateTask = () => {
     price: getRandomInt(1, 10000),
     date: generateDate(),
     favorite: Boolean(getRandomInt(0, 1)),
-    offers : generateOffers(),
+    offers: generateOffers(),
   };
 };

@@ -3,7 +3,7 @@ const getRoute = (taskList) => {
   const route1 = taskList[0].city;
   const route2 = taskList[1].city;
   const route3 = taskList[2].city;
-  return `${route1} &mdash; ${route2} &mdash; ${route3}`
+  return `${route1} &mdash; ${route2} &mdash; ${route3}`;
 };
 
 export const createSiteRouteInfoTemplate = (taskList) => {

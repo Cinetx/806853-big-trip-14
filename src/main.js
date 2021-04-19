@@ -37,6 +37,3 @@ for (let i = 0; i < TASK_COUNT; i++) {
 }
 const siteTripEventItem = siteTripEventList.querySelectorAll('.trip-events__item')[0];
 render(siteTripEventItem, createSiteEditingFormTemplate(taskList[0]), 'beforeend');
-
-
-
