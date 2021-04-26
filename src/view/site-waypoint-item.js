@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { createElement } from '../utils/util.js';
 
 const MINUTES_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;
@@ -16,19 +17,11 @@ const showDurationTime = (duration) => {
   const hour = Math.floor((+duration - day * HOURS_IN_DAY * MINUTES_IN_HOUR) / MINUTES_IN_HOUR);
   const minute = +duration % MINUTES_IN_HOUR;
 
-  if (day) {
-    return `${day}D ${hour ? hour : '00'}H ${minute ? minute : '00'}M`;
-  }
-
-  if (hour) {
-    return `${hour}H ${minute ? minute : '00'}M`;
-  }
-
-  if (minute) {
-    return `${minute}M`;
-  }
+  return day ? `${day}D ${hour}H ${minute}M` :
+    hour ? `${hour}H ${minute}M` : `${minute}M`;
 };
-export const createSiteWaypointItemTemplate = (task) => {
+
+const createSiteWaypointItem = (task) => {
   const {
     type,
     city,
@@ -50,14 +43,16 @@ export const createSiteWaypointItemTemplate = (task) => {
   const duration = Math.abs(dayjs(startEvent).diff(dayjs(endEvent), 'm'));
   const addOffersToMarkup = offers.map((item) =>
     createOffer(item))
-    .join(' ');
+    .join(' ')
 
   const favoriteClassName = favorite ? 'event__favorite-btn event__favorite-btn--active' : 'event__favorite-btn';
-  return `<li class="trip-events__item">
+
+  return (
+   `<li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="${dateDayStart}">${dayStart}</time>
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
       </div>
       <h3 class="event__title">${type} ${city}</h3>
       <div class="event__schedule">
@@ -85,6 +80,30 @@ export const createSiteWaypointItemTemplate = (task) => {
     <span class="visually-hidden">Open event</span>
   </button>
     </div >
-  </li >
-  `;
+  </li >`
+  );
 };
+
+export default class SiteWaypointItem {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteWaypointItem(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    };
+
+    return this._element;
+  };
+
+  removeElement() {
+    this._element = null;
+  };
+}
+

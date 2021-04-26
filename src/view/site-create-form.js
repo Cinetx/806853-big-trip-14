@@ -1,13 +1,17 @@
-export const createSiteCreateFormTemplate = (task) => {
+import {createElement } from '../utils/util.js';
+
+const createSiteCreateForm = (task) => {
   const { photos, info } = task;
   const renderPhoto = (photos) => {
-    let newPhoto = '';
-    photos.forEach((photo)=>{
-      newPhoto += `<img class="event__photo" src="${photo}" alt="Event photo">`;
-    });
+    let newPhoto = photos.map((photo) => {
+      return `<img class="event__photo" src="${photo}" alt="Event photo">`
+    }).join(' ')
+
     return newPhoto;
   };
-  return `<form class="event event--edit" action="#" method="post">
+
+  return (
+    `<form class="event event--edit" action="#" method="post">
   <header class="event__header">
     <div class="event__type-wrapper">
       <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -167,5 +171,30 @@ export const createSiteCreateFormTemplate = (task) => {
       </div>
     </section>
   </section>
-</form>`;
+</form>`
+  );
 };
+
+export default class SiteCreateForm {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteCreateForm(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    };
+
+    return this._element;
+  };
+
+  removeElement() {
+    this._element = null;
+  };
+}
+

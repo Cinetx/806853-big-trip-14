@@ -1,17 +1,38 @@
 import dayjs from 'dayjs';
-const getRoute = (taskList) => {
-  const route1 = taskList[0].city;
-  const route2 = taskList[1].city;
-  const route3 = taskList[2].city;
-  return `${route1} &mdash; ${route2} &mdash; ${route3}`;
-};
+import { getRoute, createElement } from '../utils/util.js';
 
-export const createSiteRouteInfoTemplate = (taskList) => {
+const createSiteRouteInfo = (taskList) => {
   const dayStart = dayjs(taskList[0].dateFrom).format('MMM D');
   const dayEnd = dayjs(taskList[taskList.length - 1].endEvent).format('MMM D');
-  return `<div class="trip-info__main">
+  return (
+    `<div class="trip-info__main">
   <h1 class="trip-info__title">${getRoute(taskList)}</h1>
 
   <p class="trip-info__dates">${dayStart}&nbsp;&mdash;&nbsp;${dayEnd}</p>
-</div>`;
+</div>`
+  );
 };
+
+export default class SiteRouteInfo {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteRouteInfo(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    };
+
+    return this._element;
+  };
+
+  removeElement() {
+    this._element = null;
+  };
+}
+

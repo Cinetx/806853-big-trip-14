@@ -1,12 +1,14 @@
 import dayjs from 'dayjs';
-export const createSiteEditingFormTemplate = (task)=>{
-  const { info } = task;
-  const { type, city, price, startEvent, endEvent } = task;
+import { createElement } from '../utils/util.js';
+
+const createSiteEditingForm = (task) => {
+  const { type, city, price, startEvent, endEvent, info } = task;
 
   const dateStart = dayjs(startEvent).format('YY/MM/DD HH:mm');
   const dateEnd = dayjs(endEvent).format('YY/MM/DD HH:mm');
 
-  return `<form class="event event--edit" action="#" method="post">
+  return (
+    `<form class="event event--edit" action="#" method="post">
   <header class="event__header">
     <div class="event__type-wrapper">
       <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -163,5 +165,30 @@ export const createSiteEditingFormTemplate = (task)=>{
       <p class="event__destination-description">${info}</p>
     </section>
   </section>
-</form>`;
+</form>`
+  );
 };
+
+export default class SiteEditingForm {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteEditingForm(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    };
+
+    return this._element;
+  };
+
+  removeElement() {
+    this._element = null;
+  };
+}
+

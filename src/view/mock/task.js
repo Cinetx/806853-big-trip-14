@@ -6,7 +6,7 @@ const TASK_INFO = [
   'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis.',
   'Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.',
 ];
-const TASK_CITY = ['Дача императора', 'Цитадель', 'Город на краю вечности', 'Измерение C-132', 'Gravity Falls'];
+const TASK_CITY = ['Emperors dacha', 'citadel', 'City on the edge of eternity', 'Dimension C-132', 'Gravity Falls'];
 const TASK_TYPE = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
 const OFFERS = [
@@ -71,7 +71,8 @@ export const generateTask = () => {
     type: getRandomArrayItem(TASK_TYPE),
     city: getRandomArrayItem(TASK_CITY),
     info: getRandomArrayItem(TASK_INFO),
-    photos: new Set(Array(5).fill().map(generateTaskPhotos)),
+    // photos: new Set(Array(5).fill().map(generateTaskPhotos)),
+    photos: new Array(5).fill().map(generateTaskPhotos),
     price: getRandomInt(1, 10000),
     date: generateDate(),
     favorite: Boolean(getRandomInt(0, 1)),
