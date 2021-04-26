@@ -19,7 +19,7 @@ const siteMenuElement = siteMainElement.querySelector('.trip-controls__navigatio
 const siteFiltersElement = siteMainElement.querySelector('.trip-controls__filters');
 const siteEventsElement = document.querySelector('.trip-events');
 
-const pointListComponent = new SiteWaypointListView()
+const pointListComponent = new SiteWaypointListView();
 
 renderElement(siteMenuElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
 renderElement(siteMainElement, new SiteCostTravelView(taskList).getElement(), RenderPosition.AFTERBEGIN);

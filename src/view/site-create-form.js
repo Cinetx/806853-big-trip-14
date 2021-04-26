@@ -3,9 +3,9 @@ import {createElement } from '../utils/util.js';
 const createSiteCreateForm = (task) => {
   const { photos, info } = task;
   const renderPhoto = (photos) => {
-    let newPhoto = photos.map((photo) => {
-      return `<img class="event__photo" src="${photo}" alt="Event photo">`
-    }).join(' ')
+    const newPhoto = photos.map((photo) => {
+      return `<img class="event__photo" src="${photo}" alt="Event photo">`;
+    }).join(' ');
 
     return newPhoto;
   };
@@ -188,13 +188,13 @@ export default class SiteCreateForm {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
-    };
+    }
 
     return this._element;
-  };
+  }
 
   removeElement() {
     this._element = null;
-  };
+  }
 }
 

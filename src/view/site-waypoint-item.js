@@ -43,12 +43,12 @@ const createSiteWaypointItem = (task) => {
   const duration = Math.abs(dayjs(startEvent).diff(dayjs(endEvent), 'm'));
   const addOffersToMarkup = offers.map((item) =>
     createOffer(item))
-    .join(' ')
+    .join(' ');
 
   const favoriteClassName = favorite ? 'event__favorite-btn event__favorite-btn--active' : 'event__favorite-btn';
 
   return (
-   `<li class="trip-events__item">
+    `<li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="${dateDayStart}">${dayStart}</time>
       <div class="event__type">
@@ -97,13 +97,13 @@ export default class SiteWaypointItem {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
-    };
+    }
 
     return this._element;
-  };
+  }
 
   removeElement() {
     this._element = null;
-  };
+  }
 }
 

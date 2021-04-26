@@ -28,7 +28,7 @@ const createSiteSorting = () => {
   </div>
 </form>`
   );
-}
+};
 
 
 export default class SiteSorting {
@@ -43,12 +43,12 @@ export default class SiteSorting {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
-    };
+    }
 
     return this._element;
-  };
+  }
 
   removeElement() {
     this._element = null;
-  };
+  }
 }
