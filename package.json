@@ -17,6 +17,9 @@
     "node": "10"
   },
   "dependencies": {
+    "css-loader": "^5.0.1",
+    "dayjs": "1.9.5",
+    "style-loader": "^2.0.0",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"

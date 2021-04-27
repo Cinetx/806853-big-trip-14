@@ -1,35 +1,59 @@
-import { createSiteMenuTemplate } from './view/site-menu.js';
-import { createSiteRouteInfoTemplate } from './view/site-route-info.js';
-import { createSiteCostTravelTemplate } from './view/site-cost-travel.js';
-import { createSiteFilterTemplate } from './view/site-filter.js';
-import { createSiteSortingTemplate } from './view/site-sorting.js';
-import { createSiteCreateFormTemplate } from './view/site-create-form.js';
-import { createSiteEditingFormTemplate } from './view/site-editing-form.js';
-import { createSiteWaypointListTemplate } from './view/site-waypoint-list.js';
-import { createSiteWaypointItemTemplate } from './view/site-waypoint-item.js';
+import SiteMenuView from './view/site-menu.js';
+import SiteRouteInfoView from './view/site-route-info.js';
+import SiteCostTravelView from './view/site-cost-travel.js';
+import SiteFilterView from './view/site-filter.js';
+import SiteSortingView from './view/site-sorting.js';
+import SiteCreateFormView from './view/site-create-form.js';
+import SiteEditingFormView from './view/site-editing-form.js';
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
+import SiteWaypointListView from './view/site-waypoint-list.js';
+import SiteWaypointItemView from './view/site-waypoint-item.js';
+import { generateTask } from './view/mock/task.js';
+import { renderElement, RenderPosition } from './utils/util.js';
+
+const TASK_COUNT = 15;
+const taskList = new Array(TASK_COUNT).fill().map(generateTask);
+
 const siteMainElement = document.querySelector('.trip-main');
 const siteMenuElement = siteMainElement.querySelector('.trip-controls__navigation');
 const siteFiltersElement = siteMainElement.querySelector('.trip-controls__filters');
 const siteEventsElement = document.querySelector('.trip-events');
 
-render(siteMenuElement, createSiteMenuTemplate(), 'beforeend');
-render(siteMainElement, createSiteCostTravelTemplate(), 'afterbegin');
-render(siteMainElement, createSiteRouteInfoTemplate(), 'afterbegin');
+const pointListComponent = new SiteWaypointListView();
 
-render(siteFiltersElement, createSiteFilterTemplate(), 'beforeend');
-render(siteEventsElement, createSiteSortingTemplate(), 'beforeend');
-render(siteEventsElement, createSiteCreateFormTemplate(), 'beforeend');
+renderElement(siteMenuElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
+renderElement(siteMainElement, new SiteCostTravelView(taskList).getElement(), RenderPosition.AFTERBEGIN);
+renderElement(siteMainElement, new SiteRouteInfoView(taskList).getElement(), RenderPosition.AFTERBEGIN);
+renderElement(siteFiltersElement, new SiteFilterView().getElement(), RenderPosition.BEFOREEND);
+renderElement(siteEventsElement, new SiteSortingView().getElement(), RenderPosition.BEFOREEND);
+renderElement(siteEventsElement, new SiteCreateFormView(taskList[0]).getElement(), RenderPosition.BEFOREEND);
+renderElement(siteEventsElement, pointListComponent.getElement(), RenderPosition.BEFOREEND);
 
-render(siteEventsElement, createSiteWaypointListTemplate(), 'beforeend');
-const siteTripEventList = siteEventsElement.querySelector('.trip-events__list');
+const renderPoint = (taskListElement, task) => {
+  const pointComponent = new SiteWaypointItemView(task);
+  const pointEditComponent = new SiteEditingFormView(task);
 
-for (let i = 0; i < 3; i++) {
-  render(siteTripEventList, createSiteWaypointItemTemplate(), 'beforeend');
+
+  const replacePointToForm = () => {
+    taskListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+  };
+
+  const replaceFormToPoint = () => {
+    taskListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+  };
+
+  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replacePointToForm();
+  });
+
+  pointEditComponent.getElement().addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+  });
+
+  renderElement(taskListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
+for (let i = 0; i < TASK_COUNT; i++) {
+  renderPoint(pointListComponent.getElement(), taskList[i]);
 }
-
-const siteTripEventItem = siteTripEventList.querySelectorAll('.trip-events__item')[0];
-render(siteTripEventItem, createSiteEditingFormTemplate(), 'beforeend');
