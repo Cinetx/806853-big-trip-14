@@ -1,4 +1,4 @@
-import { createElement } from '../utils/util.js';
+import AbstractView from './abstract';
 const createSiteWaypointList = () => {
   return (
     `<ul class="trip-events__list">
@@ -7,24 +7,8 @@ const createSiteWaypointList = () => {
 };
 
 
-export default class SiteWaypointList {
-  constructor() {
-    this._element = null;
-  }
-
+export default class SiteWaypointList extends AbstractView {
   getTemplate() {
     return createSiteWaypointList();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,9 +1,10 @@
-import dayjs from 'dayjs';
-import { getRoute, createElement } from '../utils/util.js';
+import { getRoute } from '../utils/util.js';
+import AbstractView from './abstract';
+import { getDayStartAndEnd } from '../utils/time';
 
 const createSiteRouteInfo = (taskList) => {
-  const dayStart = dayjs(taskList[0].dateFrom).format('MMM D');
-  const dayEnd = dayjs(taskList[taskList.length - 1].endEvent).format('MMM D');
+  const [dayStart, dayEnd] = getDayStartAndEnd(taskList);
+
   return (
     `<div class="trip-info__main">
   <h1 class="trip-info__title">${getRoute(taskList)}</h1>
@@ -13,26 +14,14 @@ const createSiteRouteInfo = (taskList) => {
   );
 };
 
-export default class SiteRouteInfo {
+export default class SiteRouteInfo extends AbstractView {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
   }
 
   getTemplate() {
     return createSiteRouteInfo(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

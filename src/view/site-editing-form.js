@@ -1,11 +1,9 @@
-import dayjs from 'dayjs';
-import { createElement } from '../utils/util.js';
+import AbstractView from './abstract';
+import { getFormatDate } from '../utils/time';
 
 const createSiteEditingForm = (task) => {
   const { type, city, price, startEvent, endEvent, info } = task;
-
-  const dateStart = dayjs(startEvent).format('YY/MM/DD HH:mm');
-  const dateEnd = dayjs(endEvent).format('YY/MM/DD HH:mm');
+  const [dateStart, dateEnd] = getFormatDate(startEvent, endEvent);
 
   return (
     `<form class="event event--edit" action="#" method="post">
@@ -169,26 +167,36 @@ const createSiteEditingForm = (task) => {
   );
 };
 
-export default class SiteEditingForm {
+export default class SiteEditingForm extends AbstractView {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
     return createSiteEditingForm(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
   }
 }
 

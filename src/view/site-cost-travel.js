@@ -1,5 +1,5 @@
-import { getTotalPrice, createElement } from '../utils/util.js';
-
+import { getTotalPrice } from '../utils/util.js';
+import AbstractView from './abstract';
 const createCostTravel = (taskList) => {
   return (
     `<p class="trip-info__cost">
@@ -8,25 +8,13 @@ const createCostTravel = (taskList) => {
   );
 };
 
-export default class SiteCostTravel {
+export default class SiteCostTravel extends AbstractView {
   constructor(cost) {
+    super();
     this._cost = cost;
-    this._element = null;
   }
 
   getTemplate() {
     return createCostTravel(this._cost);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

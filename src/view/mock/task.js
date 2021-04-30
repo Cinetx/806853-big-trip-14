@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import { getRandomArrayItem, getRandomInt } from '../../utils/common';
+
 const TASK_INFO = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget.',
   'Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra.',
@@ -32,17 +34,6 @@ const OFFERS = [
   },
 ];
 
-const getRandomInt = (a = 1, b = 0) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
-const getRandomArrayItem = (ar) => {
-  const randomItem = getRandomInt(0, ar.length - 1);
-  return ar[randomItem];
-};
-
 const generateTaskPhotos = () => {
   return `http://picsum.photos/248/152?r=${getRandomInt(1, 5)}`;
 };
@@ -71,7 +62,6 @@ export const generateTask = () => {
     type: getRandomArrayItem(TASK_TYPE),
     city: getRandomArrayItem(TASK_CITY),
     info: getRandomArrayItem(TASK_INFO),
-    // photos: new Set(Array(5).fill().map(generateTaskPhotos)),
     photos: new Array(5).fill().map(generateTaskPhotos),
     price: getRandomInt(1, 10000),
     date: generateDate(),
