@@ -1,24 +1,12 @@
-import dayjs from 'dayjs';
-import { createElement } from '../utils/util.js';
 
-const MINUTES_IN_HOUR = 60;
-const HOURS_IN_DAY = 24;
-
+import { showDurationTime, getFormatDate } from '../utils/time.js';
+import AbstractView from './abstract';
 const createOffer = (offer) => {
   return `<li class="event__offer">
   <span class="event__offer-title">${offer.title}</span>
   &plus;&euro;&nbsp;
   <span class="event__offer-price">${offer.price}</span>
 </li>`;
-};
-
-const showDurationTime = (duration) => {
-  const day = Math.floor(+duration / MINUTES_IN_HOUR / HOURS_IN_DAY);
-  const hour = Math.floor((+duration - day * HOURS_IN_DAY * MINUTES_IN_HOUR) / MINUTES_IN_HOUR);
-  const minute = +duration % MINUTES_IN_HOUR;
-
-  return day ? `${day}D ${hour}H ${minute}M` :
-    hour ? `${hour}H ${minute}M` : `${minute}M`;
 };
 
 const createSiteWaypointItem = (task) => {
@@ -32,15 +20,17 @@ const createSiteWaypointItem = (task) => {
     offers,
   } = task;
 
-  const dateStart = dayjs(startEvent).format('YYYY-MM-DDTHH:mm');
-  const dateEnd = dayjs(endEvent).format('YYYY-MM-DDTHH:mm');
 
-  const dayStart = dayjs(startEvent).format('MMM DD');
-  const dateDayStart = dayjs(startEvent).format('YYYY-MM-DD');
-  const dateTimeStart = dayjs(startEvent).format('HH:mm');
-  const dateTimeEnd = dayjs(endEvent).format('HH:mm');
+  const [
+    dateStart,
+    dateEnd,
+    dayMonthStart,
+    dateDayMonthYearStart,
+    dateTimeStart,
+    dateTimeEnd,
+    duration,
+  ] = getFormatDate(startEvent, endEvent);
 
-  const duration = Math.abs(dayjs(startEvent).diff(dayjs(endEvent), 'm'));
   const addOffersToMarkup = offers.map((item) =>
     createOffer(item))
     .join(' ');
@@ -50,7 +40,7 @@ const createSiteWaypointItem = (task) => {
   return (
     `<li class="trip-events__item">
     <div class="event">
-      <time class="event__date" datetime="${dateDayStart}">${dayStart}</time>
+      <time class="event__date" datetime="${dateDayMonthYearStart}">${dayMonthStart}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
       </div>
@@ -84,26 +74,25 @@ const createSiteWaypointItem = (task) => {
   );
 };
 
-export default class SiteWaypointItem {
+export default class SiteWaypointItem extends AbstractView {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
     return createSiteWaypointItem(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
   }
 }
 
