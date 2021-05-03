@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { getRandomArrayItem, getRandomInt } from '../../utils/common';
+import {nanoid} from 'nanoid';
 
 const TASK_INFO = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget.',
@@ -57,6 +58,7 @@ const generateOffers = () => {
 
 export const generateTask = () => {
   return {
+    id: nanoid(),
     startEvent: generateDate(),
     endEvent: generateDate(),
     type: getRandomArrayItem(TASK_TYPE),
