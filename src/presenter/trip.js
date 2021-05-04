@@ -1,5 +1,4 @@
 import SiteSortingView from '../view/site-sorting.js';
-import SiteCreateFormView from '../view/site-create-form.js';
 import SiteWaypointListView from '../view/site-waypoint-list.js';
 import SiteWaypointItemView from '../view/site-waypoint-item.js';
 import SiteNoPointView from '../view/site-no-point.js';
@@ -23,7 +22,6 @@ export default class Trip {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._SiteSortingComponent = new SiteSortingView();
-    this._SiteCreateFormComponent = new SiteCreateFormView();
     this._SiteWaypointListComponent = new SiteWaypointListView();
     this._SiteWaypointItemComponent = new SiteWaypointItemView();
     this._SiteNoPointComponent = new SiteNoPointView();
@@ -92,11 +90,6 @@ export default class Trip {
     this._SiteSortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
-  _renderCreateForm() {
-    render(this._tripContainer, new SiteCreateFormView(this._tripTasks[0]), RenderPosition.BEFOREEND);
-  }
-
-
   _clearWaypointList() {
     Object
       .values(this._pointPresenter)
@@ -118,8 +111,8 @@ export default class Trip {
     if (this._tripTasks.length <= 0) {
       this._renderNoPoint();
     }
+
     this._renderSorting();
-    this._renderCreateForm();
     this._renderWaypointList();
     this._renderWaypointItem();
   }
