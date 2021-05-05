@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 const CITIES_MORE_THEN = 3;
 
 export const getTotalPrice = (taskList) => {
@@ -16,5 +18,13 @@ export const getRoute = (taskList) => {
     return `${route1} &mdash; ... &mdash; ${route3}`;
   }
   return `${route1} &mdash; ${route2} &mdash; ${route3}`;
+};
+
+export const sortTaskTime = (taskA, taskB) => {
+  return dayjs(taskB.startEvent).diff(dayjs(taskA.startEvent)) - dayjs(taskB.endEvent).diff(dayjs(taskA.endEvent));
+};
+
+export const sortTaskPrice = (taskA, taskB) => {
+  return taskB.price - taskA.price;
 };
 
