@@ -26,6 +26,8 @@ export const render = (container, element, place) => {
 
 
 export const replace = (newChild, oldChild) => {
+
+
   if (oldChild instanceof Abstract) {
     oldChild = oldChild.getElement();
   }

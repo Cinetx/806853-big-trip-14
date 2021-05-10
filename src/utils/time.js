@@ -9,8 +9,8 @@ export const getDayStartAndEnd = (taskList) => {
 };
 
 export const getFormatDate = (startEvent, endEvent) => {
-  const dateStart = dayjs(startEvent).format('YYYY-MM-DDTHH:mm');
-  const dateEnd = dayjs(endEvent).format('YYYY-MM-DDTHH:mm');
+  const dateStart = dayjs(startEvent).format('DD/MM/YY HH:mm');
+  const dateEnd = dayjs(endEvent).format('DD/MM/YY HH:mm');
 
   const dayMonthStart = dayjs(startEvent).format('MMM DD');
   const dateDayMonthYearStart = dayjs(startEvent).format('YYYY-MM-DD');

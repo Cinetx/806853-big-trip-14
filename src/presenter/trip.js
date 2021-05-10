@@ -79,7 +79,12 @@ export default class Trip {
 
 
   _renderPoint(task) {
-    const pointPresenter = new PointPresenter(this._SiteWaypointListComponent, this._handleTaskChange, this._handleModeChange);
+
+    const pointPresenter = new PointPresenter(
+      this._SiteWaypointListComponent,
+      this._handleTaskChange,
+      this._handleModeChange,
+    );
     pointPresenter.init(task);
     this._pointPresenter[task.id] = pointPresenter;
   }

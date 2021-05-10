@@ -28,3 +28,22 @@ export const sortTaskPrice = (taskA, taskB) => {
   return taskB.price - taskA.price;
 };
 
+
+export const createOffersMarkup = (offers) => {
+  let offerId = 1;
+  return offers
+    .map((item) => {
+      return `
+      <div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerId}" type="checkbox"
+        name="event-offer-${item.title}">
+        <label class="event__offer-label" for="event-offer-${offerId++}">
+          <span class="event__offer-title">${item.title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${item.price}</span>
+        </label>
+      </div>
+      `;
+    })
+    .join(' ');
+};
