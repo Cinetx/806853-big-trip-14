@@ -1,4 +1,3 @@
-
 import SiteEditingFormView from '../view/site-editing-form.js';
 import SiteWaypointItemView from '../view/site-waypoint-item.js';
 import { render, RenderPosition, replace, remove } from '../utils/render.js';
@@ -112,8 +111,7 @@ export default class Point {
 
   _handleFavoriteClick() {
     this._changeData(
-      Object.assign(
-        {},
+      Object.assign({},
         this._task,
         {
           favorite: !this._task.favorite,

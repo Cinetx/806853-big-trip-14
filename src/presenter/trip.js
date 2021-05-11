@@ -3,10 +3,12 @@ import SiteWaypointListView from '../view/site-waypoint-list.js';
 import SiteWaypointItemView from '../view/site-waypoint-item.js';
 import SiteNoPointView from '../view/site-no-point.js';
 import PointPresenter from './point.js';
+
 import { render, RenderPosition } from '../utils/render.js';
 import { updateItem } from '../utils/common.js';
 import { SortType } from '../const.js';
 import { sortTaskTime, sortTaskPrice } from '../utils/util.js';
+
 
 const TASK_COUNT = 15;
 

@@ -36,3 +36,9 @@ export const OFFERS = [
     price: 40,
   },
 ];
+
+export const PICKER_SETTINGS = {
+  dateFormat: 'd/m/y H:i',
+  enableTime: true,
+  time_24hr: true,
+};

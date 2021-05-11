@@ -1,12 +1,30 @@
-import { TASK_INFO } from '../const';
+import { TASK_INFO, PICKER_SETTINGS } from '../const';
 import { getRandomArrayItem } from '../utils/common';
 import { renderPhoto } from '../utils/render';
 import { getFormatDate } from '../utils/time';
-import { createOffersMarkup } from '../utils/util';
 import { generateOffers, generateTaskPhotos } from './mock/task';
 import SmartView from './smart';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+
+const createOffersMarkup = (offers) => {
+  let offerId = 1;
+  return offers
+    .map((item) => {
+      return `
+      <div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerId}" type="checkbox"
+        name="event-offer-${item.title}">
+        <label class="event__offer-label" for="event-offer-${offerId++}">
+          <span class="event__offer-title">${item.title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${item.price}</span>
+        </label>
+      </div>
+      `;
+    })
+    .join(' ');
+};
 
 const createSiteEditingForm = (task) => {
 
@@ -177,6 +195,7 @@ export default class SiteEditingForm extends SmartView {
     this._setDatepickerEnd();
   }
 
+
   _setDatepickerStart() {
     if (this._startPicker) {
       this._startPicker.destroy();
@@ -184,15 +203,14 @@ export default class SiteEditingForm extends SmartView {
     }
 
 
-    this._startPicker = flatpickr(this.getElement().querySelector('#event-start-time-1'), {
-      dateFormat: 'd/m/y H:i',
-      enableTime: true,
-      time_24hr: true,
-      onChange: this._dateStartChangeHandler,
-      minDate: this._data.startEvent,
-    });
-
-
+    this._startPicker = flatpickr(this.getElement().querySelector('#event-start-time-1'),
+      Object.assign(
+        {
+          onChange: this._dateStartChangeHandler,
+          minDate: this._data.startEvent,
+        }, PICKER_SETTINGS,
+      ),
+    );
   }
 
   _setDatepickerEnd() {
@@ -203,13 +221,13 @@ export default class SiteEditingForm extends SmartView {
 
     this._dateState = this._data.endEvent;
 
-    this._endPicker = flatpickr(this.getElement().querySelector('#event-end-time-1'), {
-      dateFormat: 'd/m/y H:i',
-      enableTime: true,
-      time_24hr: true,
-      minDate: this._data.endEvent,
-      onChange: this._dateEndChangeHandler,
-    });
+    this._endPicker = flatpickr(this.getElement().querySelector('#event-end-time-1'),
+      Object.assign({
+        minDate: this._data.endEvent,
+        onChange: this._dateEndChangeHandler,
+      }, PICKER_SETTINGS,
+      ),
+    );
   }
 
   _dateStartChangeHandler([userDate]) {
@@ -242,7 +260,7 @@ export default class SiteEditingForm extends SmartView {
 
   _priceChangeHandler(evt) {
     evt.preventDefault();
-    this.updateData({ price: evt.target.value });
+    this.updateData({ price: evt.target.value }, true);
   }
 
   _destinationChangeHandler(evt) {
@@ -258,7 +276,8 @@ export default class SiteEditingForm extends SmartView {
     evt.preventDefault();
     this.updateData({
       type: evt.target.value,
-      offers: generateOffers() });
+      offers: generateOffers(),
+    });
   }
 
   _setInnerHandlers() {
@@ -311,7 +330,7 @@ export default class SiteEditingForm extends SmartView {
   }
 
   static parseDataToPoint(data) {
-    data = Object.assign({}, data);
-    return;
+    return data = Object.assign({}, data);
+
   }
 }
