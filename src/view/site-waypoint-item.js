@@ -20,7 +20,6 @@ const createSiteWaypointItem = (task) => {
     offers,
   } = task;
 
-
   const [
     dateStart,
     dateEnd,

@@ -27,4 +27,3 @@ export const sortTaskTime = (taskA, taskB) => {
 export const sortTaskPrice = (taskA, taskB) => {
   return taskB.price - taskA.price;
 };
-

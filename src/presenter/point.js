@@ -1,4 +1,3 @@
-
 import SiteEditingFormView from '../view/site-editing-form.js';
 import SiteWaypointItemView from '../view/site-waypoint-item.js';
 import { render, RenderPosition, replace, remove } from '../utils/render.js';
@@ -55,6 +54,7 @@ export default class Point {
       }
     }
 
+
     remove(prevPointComponent);
     remove(prevPointEditComponent);
   }
@@ -71,6 +71,7 @@ export default class Point {
   }
 
   _replacePointToForm() {
+
     replace(this._pointEditComponent, this._pointComponent);
     document.addEventListener('keydown', this._escKeyDownHandler);
 
@@ -81,34 +82,36 @@ export default class Point {
   _replaceFormToPoint() {
     replace(this._pointComponent, this._pointEditComponent);
     document.removeEventListener('keydown', this._escKeyDownHandler);
-
     this._mode = Mode.DEFAULT;
   }
 
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this._pointEditComponent.reset(this._task);
       this._replaceFormToPoint();
     }
   }
 
   _handleEditClick() {
     this._replacePointToForm();
+
+
   }
 
-  _handleFormSubmit(task) {
-    this._changeData(task);
+  _handleFormSubmit() {
     this._replaceFormToPoint();
   }
 
   _handleFormEditClick() {
+    this._pointEditComponent.reset(this._task);
     this._replaceFormToPoint();
   }
 
+
   _handleFavoriteClick() {
     this._changeData(
-      Object.assign(
-        {},
+      Object.assign({},
         this._task,
         {
           favorite: !this._task.favorite,
