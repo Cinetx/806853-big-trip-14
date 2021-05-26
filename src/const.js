@@ -1,7 +1,17 @@
+import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
+import { getRandomArrayItem, getRandomInt } from './utils/common';
+import { generateTaskPhotos } from './view/mock/task';
 export const SortType = {
   DAY: 'day',
   TIME: 'time',
   PRICE: 'price',
+};
+
+export const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
 };
 
 export const TASK_INFO = [
@@ -42,3 +52,32 @@ export const PICKER_SETTINGS = {
   enableTime: true,
   time_24hr: true,
 };
+
+export const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export const DEFAULT_TASK = {
+  id: nanoid(),
+  startEvent: dayjs().toDate(),
+  endEvent: dayjs().toDate(),
+  type: getRandomArrayItem(TASK_TYPE),
+  city: getRandomArrayItem(TASK_CITY),
+  info: getRandomArrayItem(TASK_INFO),
+  photos: new Array(5).fill().map(generateTaskPhotos),
+  price: getRandomInt(1, 10000),
+  date: dayjs().toDate(),
+  favorite: Boolean(getRandomInt(0, 1)),
+  offers: [
+    OFFERS[getRandomInt(0, OFFERS.length - 1)],
+  ],
+};
+

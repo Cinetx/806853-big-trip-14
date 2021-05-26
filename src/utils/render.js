@@ -53,6 +53,7 @@ export const createElement = (template) => {
 };
 
 export const renderPhoto = (photos) => {
+
   const newPhoto = photos.map((photo) => {
     return `<img class="event__photo" src="${photo}" alt="Event photo">`;
   }).join(' ');
@@ -61,6 +62,10 @@ export const renderPhoto = (photos) => {
 };
 
 export const remove = (component) => {
+  if (component === null) {
+    return;
+  }
+
   if (!(component instanceof Abstract)) {
     throw new Error('Can remove only components');
   }

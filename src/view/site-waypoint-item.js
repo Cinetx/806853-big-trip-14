@@ -1,6 +1,7 @@
 
 import { showDurationTime, getFormatDate } from '../utils/time.js';
 import AbstractView from './abstract';
+import he from 'he';
 const createOffer = (offer) => {
   return `<li class="event__offer">
   <span class="event__offer-title">${offer.title}</span>
@@ -43,7 +44,7 @@ const createSiteWaypointItem = (task) => {
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${type} ${city}</h3>
+      <h3 class="event__title">${type} ${he.encode(city)}</h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="${dateStart}">${dateTimeStart}</time>
