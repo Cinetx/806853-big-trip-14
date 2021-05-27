@@ -1,4 +1,4 @@
-import { TASK_INFO, PICKER_SETTINGS } from '../const';
+import { TASK_INFO, PICKER_SETTINGS, TASK_CITY } from '../const';
 import { getRandomArrayItem } from '../utils/common';
 import { renderPhoto } from '../utils/render';
 import { getFormatDate } from '../utils/time';
@@ -6,6 +6,14 @@ import { generateOffers, generateTaskPhotos } from './mock/task';
 import SmartView from './smart';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+
+const createCityNameOptionsMarkup = () => {
+  const cityOptions = TASK_CITY.map((city) => {
+    return `<option value="${city}"></option>`;
+  }).join(' ');
+
+  return cityOptions;
+};
 
 const createOffersMarkup = (offers) => {
   let offerId = 1;
@@ -121,11 +129,9 @@ const createSiteEditingForm = (task) => {
       <label class="event__label  event__type-output" for="event-destination-1">
         ${type}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" required list="destination-list-1">
       <datalist id="destination-list-1">
-        <option value="Amsterdam"></option>
-        <option value="Geneva"></option>
-        <option value="Chamonix"></option>
+       ${createCityNameOptionsMarkup()}
       </datalist>
     </div>
 
@@ -142,7 +148,7 @@ const createSiteEditingForm = (task) => {
         <span class="visually-hidden">Price</span>
         &euro;
       </label>
-      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+      <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
     </div>
 
     <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -180,15 +186,18 @@ export default class SiteEditingForm extends SmartView {
   constructor(point) {
     super();
     this._data = SiteEditingForm.parsePointToData(point);
-    this._datepicker = null;
+    this._startPicker = null;
+    this._endPicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+
     this._priceChangeHandler = this._priceChangeHandler.bind(this);
     this._routeTypeChangeHandler = this._routeTypeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
     this._dateStartChangeHandler = this._dateStartChangeHandler.bind(this);
     this._dateEndChangeHandler = this._dateEndChangeHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
     this._setInnerHandlers();
     this._setDatepickerStart();
@@ -323,6 +332,32 @@ export default class SiteEditingForm extends SmartView {
   setEditClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(SiteEditingForm.parseDataToPoint(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
+  }
+
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._startPicker) {
+      this._startPicker.destroy();
+      this._startPicker = null;
+    }
+
+    if (this._endPicker) {
+      this._endPicker.destroy();
+      this._endPicker = null;
+    }
   }
 
   static parsePointToData(data) {

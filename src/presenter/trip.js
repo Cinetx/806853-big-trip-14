@@ -3,66 +3,122 @@ import SiteWaypointListView from '../view/site-waypoint-list.js';
 import SiteWaypointItemView from '../view/site-waypoint-item.js';
 import SiteNoPointView from '../view/site-no-point.js';
 import PointPresenter from './point.js';
+import PointNewPresenter from './point-new';
 
-import { render, RenderPosition } from '../utils/render.js';
-import { updateItem } from '../utils/common.js';
-import { SortType } from '../const.js';
+
+import { render, RenderPosition, remove } from '../utils/render.js';
+
+import { SortType, UpdateType, UserAction } from '../const.js';
 import { sortTaskTime, sortTaskPrice } from '../utils/util.js';
-
+import { filter } from '../utils/filter';
+import { FilterType } from '../const';
 
 const TASK_COUNT = 15;
 
 export default class Trip {
-  constructor(tripContainer) {
+
+  constructor(tripContainer, pointsModel, filterModel) {
     this._tripContainer = tripContainer;
+    this._pointsModel = pointsModel;
+    this._filterModel = filterModel;
     this._renderTaskCount = TASK_COUNT;
     this._pointPresenter = {};
+
     this._currentSortType = SortType.DAY;
 
-    this._handleTaskChange = this._handleTaskChange.bind(this);
+    this._sortComponent = null;
+
+    this._siteWaypointListComponent = new SiteWaypointListView();
+    this._siteWaypointItemComponent = new SiteWaypointItemView();
+    this._siteNoPointComponent = new SiteNoPointView();
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._SiteSortingComponent = new SiteSortingView();
-    this._SiteWaypointListComponent = new SiteWaypointListView();
-    this._SiteWaypointItemComponent = new SiteWaypointItemView();
-    this._SiteNoPointComponent = new SiteNoPointView();
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+    this._pointNewPresenter = new PointNewPresenter(this._siteWaypointListComponent, this._handleViewAction);
   }
 
+  init() {
+    this._renderBoard();
+    render(this._tripContainer, this._siteWaypointListComponent, RenderPosition.BEFOREEND);
 
-  init(tripTasks) {
-    this._tripTasks = tripTasks.slice();
-    this._sourcedTripTasks = tripTasks.slice();
-    this._renderTrip();
   }
 
-  _handleTaskChange(updatedTask) {
-    this._tripTasks = updateItem(this._tripTasks, updatedTask);
-    this._sourcedTripTasks = updateItem(this._sourcedTripTasks, updatedTask);
-    this._pointPresenter[updatedTask.id].init(updatedTask);
+  createPoint() {
+    this._currentSortType = SortType.DAY;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._pointNewPresenter.init();
+  }
+
+  _getPoints() {
+    const filterType = this._filterModel.getFilter();
+    const points = this._pointsModel.getPoints();
+    const filteredPoints = filter[filterType](points);
+
+    switch (this._currentSortType) {
+      case SortType.TIME:
+        return filteredPoints.sort(sortTaskTime);
+      case SortType.PRICE:
+        return filteredPoints.sort(sortTaskPrice);
+    }
+
+    return filteredPoints;
+  }
+
+  _handleViewAction(actionType, updateType, update) {
+
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this._pointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this._pointsModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this._pointsModel.deletePoint(updateType, update);
+        break;
+    }
+  }
+
+  _handleModelEvent(updateType, data) {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._pointPresenter[data.id].init(data);
+        break;
+
+      case UpdateType.MINOR:
+        this._clearBoard();
+        this._renderBoard();
+        break;
+
+      case UpdateType.MAJOR:
+        this._clearBoard({
+          resetSortType: true,
+        });
+        this._renderBoard();
+        break;
+    }
   }
 
   _handleModeChange() {
+    this._pointNewPresenter.destroy();
     Object
       .values(this._pointPresenter)
       .forEach((presenter) => presenter.resetView());
   }
 
-  _sortTasks(sortType) {
-    switch (sortType) {
+  _sortTasks() {
+    switch (this._currentSortType) {
       case SortType.TIME:
-        this._tripTasks.sort(sortTaskTime);
-        break;
+        return this._pointsModel.getPoints().slice().sort(sortTaskTime);
       case SortType.PRICE:
-        this._tripTasks.sort(sortTaskPrice);
-        break;
-      default:
-        this._tripTasks = this._sourcedTripTasks.slice();
+        return this._pointsModel.getPoints().slice().sort(sortTaskPrice);
     }
 
-    this._currentSortType = sortType;
-
-
+    return this._tasksModel.getPoints();
   }
 
   _handleSortTypeChange(sortType) {
@@ -70,57 +126,56 @@ export default class Trip {
       return;
     }
 
-    this._sortTasks(sortType);
-    this._clearWaypointList();
-    this._renderWaypointItem();
+    this._currentSortType = sortType;
+    this._clearBoard();
+    this._renderBoard();
   }
 
   _renderNoPoint() {
-    render(this._tripContainer, this._SiteNoPointComponent, RenderPosition.BEFOREEND);
+    render(this._tripContainer, this._siteNoPointComponent, RenderPosition.BEFOREEND);
   }
 
-
   _renderPoint(task) {
-
     const pointPresenter = new PointPresenter(
-      this._SiteWaypointListComponent,
-      this._handleTaskChange,
+      this._siteWaypointListComponent,
+      this._handleViewAction,
       this._handleModeChange,
     );
     pointPresenter.init(task);
     this._pointPresenter[task.id] = pointPresenter;
   }
 
+  _renderPoints(tasks) {
+    tasks.forEach((task) => this._renderPoint(task));
+  }
+
   _renderSorting() {
-    render(this._tripContainer, this._SiteSortingComponent, RenderPosition.BEFOREEND);
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
+    }
 
-    this._SiteSortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    this._sortComponent = new SiteSortingView(this._currentSortType);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(this._tripContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _clearWaypointList() {
-    Object
-      .values(this._pointPresenter)
-      .forEach((presenter) => presenter.destroy());
+  _clearBoard({ resetSortType = false } = {}) {
+
+    Object.values(this._pointPresenter).forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
-    this._renderedTaskCount = TASK_COUNT;
-  }
 
-  _renderWaypointList() {
-    render(this._tripContainer, this._SiteWaypointListComponent, RenderPosition.BEFOREEND);
-  }
+    remove(this._sortComponent);
+    remove(this._siteNoPointComponent);
 
-  _renderWaypointItem() {
-    for (let i = 0; i < this._renderTaskCount; i++) {
-      this._renderPoint(this._tripTasks[i]);
+    if (resetSortType) {
+      this._currentSortType = SortType.DAY;
     }
   }
-  _renderTrip() {
-    if (this._tripTasks.length <= 0) {
-      this._renderNoPoint();
-    }
 
+  _renderBoard() {
+    const pointCount = this._getPoints().length;
+    const points = this._getPoints().slice(0, Math.min(pointCount, TASK_COUNT));
     this._renderSorting();
-    this._renderWaypointList();
-    this._renderWaypointItem();
+    this._renderPoints(points);
   }
 }

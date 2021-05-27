@@ -1,7 +1,7 @@
 import SiteEditingFormView from '../view/site-editing-form.js';
 import SiteWaypointItemView from '../view/site-waypoint-item.js';
 import { render, RenderPosition, replace, remove } from '../utils/render.js';
-
+import { UserAction, UpdateType } from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -23,6 +23,7 @@ export default class Point {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormEditClick = this._handleFormEditClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(task) {
@@ -36,8 +37,10 @@ export default class Point {
 
     this._pointComponent.setEditClickHandler(this._handleEditClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setEditClickHandler(this._handleFormEditClick);
+    this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._pointListContainer, this._pointComponent, RenderPosition.BEFOREEND);
@@ -95,11 +98,14 @@ export default class Point {
 
   _handleEditClick() {
     this._replacePointToForm();
-
-
   }
 
-  _handleFormSubmit() {
+  _handleFormSubmit(point) {
+    this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
     this._replaceFormToPoint();
   }
 
@@ -108,9 +114,14 @@ export default class Point {
     this._replaceFormToPoint();
   }
 
+  _handleDeleteClick(point) {
+    this._changeData(UserAction.DELETE_POINT, UpdateType.MINOR, point);
+  }
 
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
       Object.assign({},
         this._task,
         {

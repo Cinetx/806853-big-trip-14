@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { getRandomArrayItem, getRandomInt } from '../../utils/common';
-import {nanoid} from 'nanoid';
+import { nanoid } from 'nanoid';
 import { TASK_INFO, TASK_CITY, TASK_TYPE, OFFERS } from '../../const';
 
 export const generateTaskPhotos = () => {
@@ -14,6 +14,7 @@ const generateDate = () => {
   return dayjs().add(days, 'd').add(hours, 'h').add(minutes, 'm').toDate();
 };
 
+
 export const generateOffers = () => {
   return Array.from(
     new Set(
@@ -23,6 +24,7 @@ export const generateOffers = () => {
     ),
   );
 };
+
 
 export const generateTask = () => {
   return {
@@ -39,3 +41,5 @@ export const generateTask = () => {
     offers: generateOffers(),
   };
 };
+
+
